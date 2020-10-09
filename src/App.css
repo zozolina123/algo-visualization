@@ -1,38 +1,135 @@
-.App {
-  text-align: center;
+* {
+    box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.horizontal-slider {
+    width: 90%;
+    margin: 0 auto;
+    height: 25px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.example-track {
+    top: 0;
+    bottom: 0;
+    background: red;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.example-thumb {
+    position: relative;
+    left: -200px;
+    height: 25px;
+    line-height: 25px;
+    width: 35px;
+    text-align: center;
+    background-color: #000;
+    color: #fff;
+    cursor: grab;
 }
 
-.App-link {
-  color: #61dafb;
+.controls {
+    background-color: #282c34;
+    height: inherit;
+    vertical-align: top;
+    display: inline-block;
+    align-items: stretch;
+    width: 15%;
+    min-height: calc(100vh - 41px);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.controls .targetDiv {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.controls p {
+    margin: 10px;
+    text-align: center;
+}
+
+.controls input {
+    margin: 0 auto;
+    width: 30px;
+    display: inline-block;
+}
+
+.controls button {
+    display: block;
+    margin: 10px auto;
+    width: 100px;
+    height: 45px;
+}
+
+.controls p {
+    color: white;
+    text-align: center;
+}
+
+.sketch {
+    align-items: stretch;
+    display: inline-block;
+    width: 85%;
+}
+
+.active {
+    background-color: darkgray;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    height: 90vh;
+}
+
+#home {
+    margin: auto;
+    height: 60vh;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+#home h1 {
+    flex: 0 1 100%;
+    text-align: center;
+}
+
+#home .routeButton {
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+#home .routeButton a {
+    display: block;
+    text-align: center;
+}
+
+#home .routeButton a button {
+    padding: 25px 50px;
+    font-size: 32px;
+}
+
+.page {
+    position: absolute;
+    overflow: hidden;
+}
+
+.page-enter {
+    opacity: 0;
+}
+
+.page-enter-active {
+    opacity: 1;
+    transition: opacity 300ms;
+}
+
+.page-exit {
+    opacity: 1;
+}
+
+.page-exit-active {
+    opacity: 0;
+    transition: opacity 300ms;
 }
