@@ -1,12 +1,15 @@
 export default function sketch(p) {
     var _ = require('lodash');
-    let canvas, columns = 20,
-        rows = 20,
+    let canvas, columns,
+        rows,
         array = [],
         start, end, current, openSet, path = [],
-        neighbours = [];
+        neighbours = [],
+        walls;
     let height = window.innerHeight - 45,
         width = 85 / 100 * window.innerWidth - 20,
+        cellWidth = width / rows,
+        cellHeight = height / columns,
         stepCounter = 0,
         nextStep = true;
 
@@ -17,7 +20,7 @@ export default function sketch(p) {
             this.visited = false;
             this.distance = Infinity;
             this.score = Infinity;
-            this.wall = Math.random() * 100 > 80;
+            this.size = cellWidth > cellHeight ? cellHeight : cellWidth;
         }
 
         getNeighbours = () => {
@@ -38,7 +41,8 @@ export default function sketch(p) {
         }
 
         getDistance(targetNode) {
-            return p.dist(this, end);
+            console.log(p.dist(this.i, this.j, targetNode.i, targetNode.j))
+            return p.dist(this.i, this.j, targetNode.i, targetNode.j);
         }
 
         draw = () => {
@@ -56,33 +60,20 @@ export default function sketch(p) {
             } else if (this.visited) {
                 p.fill(255, 0, 255);
             }
-            p.square(this.i * 20, this.j * 20, 20);
+            p.square(this.i * this.size, this.j * this.size, this.size);
         }
 
     }
 
     p.setup = () => {
-        canvas = p.createCanvas(width, height);
         p.frameRate(30);
-        array = _.map(new Array(rows), () => []);
-        for (let i = 0; i < rows; i++) {
-            for (let j = 0; j < columns; j++) {
-                array[i][j] = new Cell(i, j);
-            }
-        }
-        end = array[rows - 1][columns - 1];
-        end.wall = false;
-        start = array[0][0];
-        start.wall = false;
-        start.distance = 0;
-        start.score = start.getDistance(end);
-        openSet = [start];
     }
 
     p.draw = () => {
         if (openSet.length > 0) {
-            current = openSet.reduce((prev, current) =>
-                (prev.score <= current.score) ? prev : current); // we change current to node with lowest score
+            current = openSet.reduce((prev, current) => {
+                return (prev.score <= current.score) ? prev : current
+            }); // we change current to node with lowest score
             if (current == end) {
                 getPath();
             }
@@ -112,8 +103,31 @@ export default function sketch(p) {
             path.push(current.previous);
             current = current.previous;
         }
+        console.log(path.length)
+
         p.noLoop();
     }
 
-    p.myCustomRedrawAccordingToNewPropsHandler = (newProps) => {}
+    p.myCustomRedrawAccordingToNewPropsHandler = (newProps) => {
+        columns = newProps.columns;
+        rows = newProps.rows;
+        walls = newProps.walls;
+        array = _.map(new Array(rows), () => []);
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < columns; j++) {
+                array[i][j] = new Cell(i, j);
+                array[i][j].wall = walls[i][j];
+            }
+        }
+        canvas = p.createCanvas(array[0][0].size * rows, array[0][0].size * columns);
+        end = array[rows - 1][columns - 1];
+        end.wall = false;
+        start = array[0][0];
+        start.wall = false;
+        start.distance = 0;
+        start.score = start.getDistance(end);
+        openSet = [start];
+        cellWidth = width / rows;
+        cellHeight = height / columns;
+    }
 }

@@ -6,9 +6,12 @@ export default function sketch(p) {
         array = [],
         start, end, current, stack = [],
         path = [],
+        walls,
         neighbours = [];
     let height = window.innerHeight - 45,
         width = 85 / 100 * window.innerWidth - 20,
+        cellWidth = width / rows,
+        cellHeight = height / columns,
         stepCounter = 0,
         nextStep = true,
         done;
@@ -18,7 +21,8 @@ export default function sketch(p) {
             this.i = i;
             this.j = j;
             this.visited = false;
-            this.wall = Math.random() * 100 > 95;
+            this.wall = Math.random() * 100 > 75;
+            this.size = cellWidth > cellHeight ? cellHeight : cellWidth;
         }
 
         getNeighbours = () => {
@@ -53,27 +57,13 @@ export default function sketch(p) {
             } else if (this.visited) {
                 p.fill(255, 0, 255);
             }
-            p.square(this.i * 20, this.j * 20, 20);
+            p.square(this.i * this.size, this.j * this.size, this.size);
         }
 
     }
 
     p.setup = () => {
-        canvas = p.createCanvas(width, height);
         p.frameRate(30);
-        array = _.map(new Array(rows), () => []);
-        for (let i = 0; i < rows; i++) {
-            for (let j = 0; j < columns; j++) {
-                array[i][j] = new Cell(i, j);
-            }
-        }
-        start = array[0][0];
-        start.wall = false;
-        start.distance = 0;
-        end = array[rows - 1][columns - 1];
-        end.wall = false;
-        stack.push(start);
-        array.forEach(cellArray => cellArray.forEach(cell => cell.draw()));
     }
 
     p.draw = () => {
@@ -96,5 +86,26 @@ export default function sketch(p) {
         array.forEach(cellArray => cellArray.forEach(cell => cell.draw()));
     }
 
-    p.myCustomRedrawAccordingToNewPropsHandler = (newProps) => {}
+    p.myCustomRedrawAccordingToNewPropsHandler = (newProps) => {
+        columns = newProps.columns;
+        rows = newProps.rows;
+        walls = newProps.walls;
+        array = _.map(new Array(rows), () => []);
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < columns; j++) {
+                array[i][j] = new Cell(i, j);
+                array[i][j].wall = walls[i][j];
+            }
+        }
+        canvas = p.createCanvas(array[0][0].size * rows, array[0][0].size * columns);
+        start = array[0][0];
+        start.wall = false;
+        start.distance = 0;
+        end = array[rows - 1][columns - 1];
+        end.wall = false;
+        stack.push(start);
+        cellWidth = width / rows;
+        cellHeight = height / columns;
+        array.forEach(cellArray => cellArray.forEach(cell => cell.draw()));
+    }
 }
