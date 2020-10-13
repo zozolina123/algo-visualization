@@ -1,8 +1,8 @@
 export default function sketch(p) {
     var _ = require('lodash');
 
-    let canvas, columns,
-        rows,
+    let canvas, columns = 20,
+        rows = 20,
         array = [],
         walls,
         start, end, current, unvisited, path = [],
@@ -63,6 +63,9 @@ export default function sketch(p) {
 
     p.setup = () => {
         p.frameRate(30);
+        if (array && array[0] && array[0][0].size)
+            canvas = p.resizeCanvas(array[0][0].size * rows, array[0][0].size * columns);
+
     }
 
     p.draw = () => {
@@ -94,26 +97,29 @@ export default function sketch(p) {
     }
 
     p.myCustomRedrawAccordingToNewPropsHandler = (newProps) => {
-        columns = newProps.columns;
-        rows = newProps.rows;
-        walls = newProps.walls;
-        array = _.map(new Array(rows), () => []);
-        for (let i = 0; i < rows; i++) {
-            for (let j = 0; j < columns; j++) {
-                array[i][j] = new Cell(i, j);
-                array[i][j].wall = walls[i][j];
+        if (newProps.rows && newProps.columns) {
+            columns = newProps.columns;
+            rows = newProps.rows;
+            walls = newProps.walls;
+            array = _.map(new Array(rows), () => []);
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < columns; j++) {
+                    array[i][j] = new Cell(i, j);
+                    array[i][j].wall = walls[i][j];
+                }
             }
+            canvas = p.createCanvas(array[0][0].size * rows, array[0][0].size * columns);
+            console.log(canvas);
+            start = array[0][0];
+            start.wall = false;
+            start.distance = 0;
+            current = start;
+            end = array[rows - 1][columns - 1];
+            end.wall = false;
+            unvisited = array.slice().flat();
+            cellWidth = width / rows;
+            cellHeight = height / columns;
+            array.forEach(cellArray => cellArray.forEach(cell => cell.draw()));
         }
-        canvas = p.createCanvas(array[0][0].size * rows, array[0][0].size * columns);
-        start = array[0][0];
-        start.wall = false;
-        start.distance = 0;
-        current = start;
-        end = array[rows - 1][columns - 1];
-        end.wall = false;
-        unvisited = array.slice().flat();
-        cellWidth = width / rows;
-        cellHeight = height / columns;
-        array.forEach(cellArray => cellArray.forEach(cell => cell.draw()));
     }
 }

@@ -41,7 +41,6 @@ export default function sketch(p) {
         }
 
         getDistance(targetNode) {
-            console.log(p.dist(this.i, this.j, targetNode.i, targetNode.j))
             return p.dist(this.i, this.j, targetNode.i, targetNode.j);
         }
 
@@ -53,6 +52,8 @@ export default function sketch(p) {
                 p.fill(0, 255, 0);
             } else if (this == end) {
                 p.fill(255, 0, 0);
+            } else if (this == current) {
+                p.fill(100, 100, 100);
             } else if (path.includes(this)) {
                 p.fill(255, 255, 0);
             } else if (neighbours.includes(this)) {
@@ -71,9 +72,13 @@ export default function sketch(p) {
 
     p.draw = () => {
         if (openSet.length > 0) {
-            current = openSet.reduce((prev, current) => {
-                return (prev.score <= current.score) ? prev : current
-            }); // we change current to node with lowest score
+            let min = 10000;
+            for (let i = 0; i < openSet.length; i++) {
+                if (openSet[i].score < min) {
+                    current = openSet[i];
+                    min = openSet[i].score;
+                }
+            }
             if (current == end) {
                 getPath();
             }
@@ -87,7 +92,7 @@ export default function sketch(p) {
                     const tempDistance = current.distance + 1;
                     if (tempDistance < neighbour.distance) {
                         neighbour.distance = tempDistance;
-                        neighbour.score = tempDistance + neighbour.getDistance(end);
+                        neighbour.score = tempDistance + (neighbour.getDistance(end) * 2);
                         neighbour.previous = current;
                         if (!openSet.includes(neighbour))
                             openSet.push(neighbour);
@@ -103,8 +108,6 @@ export default function sketch(p) {
             path.push(current.previous);
             current = current.previous;
         }
-        console.log(path.length)
-
         p.noLoop();
     }
 

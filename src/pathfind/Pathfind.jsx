@@ -9,21 +9,26 @@ import _ from 'lodash';
 class Search extends Component {
   constructor(){
     super();
-    this.state = {sketch: dijkstra};
     this.columns = 20;
     this.rows = 20;
-    this.walls = _.map(new Array(this.rows), () => []);
+    this.state = {sketch: dijkstra, walls: this.generateWallsArray()};
+  }
+
+   generateWallsArray = () => {
+    const walls = _.map(new Array(this.rows), () => []);
     for (let i = 0; i < this.rows; i++) {
         for (let j = 0; j < this.columns; j++) {
-            this.walls[i][j] = Math.random() > 0.8;
+            walls[i][j] = Math.random() > 0.7;
         }
     }
-    console.log(this.walls);
+    return walls;
   }
+
   render() {
     return (
       <div className="wrapper">
         <div className="controls">
+          <button onClick={() => this.setState({walls: this.generateWallsArray(), key: Math.random()})}>New Maze</button>
           <button className={this.state.sketch===dijkstra ? 'active' : ''} onClick={() => this.setState({sketch: dijkstra, key: Math.random()})}>Dijkstra</button>
           <button className={this.state.sketch===asharp ? 'active' : ''} onClick={() => this.setState({sketch: asharp, key: Math.random()})}>A*</button>
           <button className={this.state.sketch===dfs ? 'active' : ''} onClick={() => this.setState({sketch: dfs, key: Math.random()})}>DFS</button>
@@ -33,7 +38,7 @@ class Search extends Component {
           <P5Wrapper 
             columns={20}
             rows={20}
-            walls={this.walls}
+            walls={this.state.walls}
             sketch={this.state.sketch} 
             key = {this.state.key}
             />
