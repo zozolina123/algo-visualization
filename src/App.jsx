@@ -4,7 +4,6 @@ import Navbar from './navigation/NavBar'
 import Sort from './sort/Sort';
 import Search from'./search/Search';
 import Pathfind from './pathfind/Pathfind';
-import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import {
   BrowserRouter as Router,
   Switch,
@@ -35,12 +34,6 @@ function Home() {
 }
 
 const AnimatedSwitch = withRouter(({location}) => (
-  <TransitionGroup>
-        <CSSTransition 
-          key={location.key} 
-          classNames="page" 
-          timeout={1000}
-        >
           <Switch>
             <Route path="/sort">
               <Sort />
@@ -55,8 +48,6 @@ const AnimatedSwitch = withRouter(({location}) => (
               <Home />
             </Route>
           </Switch>
-        </CSSTransition>
-    </TransitionGroup>
 ));
 
 export default App;
