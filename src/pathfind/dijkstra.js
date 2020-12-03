@@ -26,16 +26,16 @@ export default function sketch(p) {
 
         getNeighbours = () => {
             const neighbours = [];
-            if (this.i > 0) {
+            if (this.i > 0 && !array[this.i - 1][this.j].wall) {
                 neighbours.push(array[this.i - 1][this.j])
             }
-            if (this.j > 0) {
+            if (this.j > 0 && !array[this.i][this.j - 1].wall) {
                 neighbours.push(array[this.i][this.j - 1])
             }
-            if (this.i < array.length - 1) {
+            if (this.i < array.length - 1 && !array[this.i + 1][this.j].wall) {
                 neighbours.push(array[this.i + 1][this.j])
             }
-            if (this.j < array.length - 1) {
+            if (this.j < array.length - 1 && !array[this.i][this.j + 1].wall) {
                 neighbours.push(array[this.i][this.j + 1])
             }
             return neighbours;
