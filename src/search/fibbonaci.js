@@ -17,8 +17,8 @@ export default function sketch(p) {
     p.setup = () => {
         canvas = p.createCanvas(width, height);
         p.stroke('black');
+        p.fill(20, 20, 20);
         p.textSize(barWidth / 2);
-        p.redraw();
         p.frameRate(speed);
         p.textAlign(p.CENTER, p.CENTER);
     }
@@ -26,12 +26,6 @@ export default function sketch(p) {
     p.draw = () => {
         p.background('white');
         stepCounter++;
-        if (values && values[0] === targetElement) {
-            elementFound = true;
-            current = 0;
-            fibLow = 0;
-            fibHigh = 0;
-        }
         drawArray();
         incrementIndeces();
     }
@@ -39,7 +33,6 @@ export default function sketch(p) {
     p.myCustomRedrawAccordingToNewPropsHandler = (newProps) => {
         if (!_.isEmpty(_.xor(values, newProps.values))) {
             values = newProps.values.sort((a, b) => a - b);
-            console.log(newProps.targetElement);
             while (fib < values.length) {
                 fib = fibLow + fibHigh;
                 if (fib < values.length) {
@@ -54,7 +47,8 @@ export default function sketch(p) {
         barWidth = width / values.length;
         p.frameRate(speed);
         newProps.start ? p.loop() : p.noLoop();
-        if (newProps.nextStep !== nextStep) {
+        console.log(nextStep);
+        if (newProps.nextStep !== nextStep && stepCounter > 0) {
             p.redraw();
             nextStep = newProps.nextStep;
         }
@@ -67,7 +61,7 @@ export default function sketch(p) {
             p.textSize(barWidth / 4);
         }
         for (let k = 0; k <= values.length; k++) {
-            if (k >= offset + fibLow && k <= offset + fibHigh) {
+            if (k >= offset && k <= offset + fib) {
                 p.fill(255, 140, 0);
             }
             if (current === k) {
@@ -102,6 +96,11 @@ export default function sketch(p) {
             fibLow = fib - fibHigh;
         };
         current = Math.min(offset + fibLow, values.length - 1);
+        if (fibHigh === 1) {
+            elementFound = true;
+            fibHigh = 0;
+            current = 0
+        };
     }
 
 }

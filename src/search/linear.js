@@ -35,7 +35,7 @@ export default function sketch(p) {
         barWidth = width / values.length;
         p.frameRate(speed);
         newProps.start ? p.loop() : p.noLoop();
-        if (newProps.nextStep !== nextStep) {
+        if (newProps.nextStep !== nextStep && stepCounter > 0) {
             p.redraw();
             nextStep = newProps.nextStep;
         }

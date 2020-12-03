@@ -54,7 +54,7 @@ export default function sketch(p) {
             p.textSize(barWidth / 4);
         }
         for (let k = 0; k <= values.length; k++) {
-            if (k <= sortedIndex) {
+            if (k <= sortedIndex + 1) {
                 p.fill(255, 140, 0);
             }
             if (k == i) {

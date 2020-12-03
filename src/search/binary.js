@@ -24,12 +24,6 @@ export default function sketch(p) {
     p.draw = () => {
         p.background('white');
         stepCounter++;
-        if (values && values[0] === targetElement) {
-            elementFound = true;
-            current = 0;
-            low = 0;
-            high = 0;
-        }
         drawArray();
         incrementIndeces();
     }
@@ -45,7 +39,7 @@ export default function sketch(p) {
         barWidth = width / values.length;
         p.frameRate(speed);
         newProps.start ? p.loop() : p.noLoop();
-        if (newProps.nextStep !== nextStep) {
+        if (newProps.nextStep !== nextStep && stepCounter > 0) {
             p.redraw();
             nextStep = newProps.nextStep;
         }
@@ -61,7 +55,7 @@ export default function sketch(p) {
             if (k >= low && k <= high) {
                 p.fill(255, 140, 0);
             }
-            if (current === k) {
+            if (Math.round((low + high) / 2) === k) {
                 p.fill(0, 0, 255);
             }
             p.rect(k * barWidth, height - (values[k] / 100 * height), barWidth, height);
@@ -80,7 +74,6 @@ export default function sketch(p) {
             p.noLoop();
         }
         current = Math.round((low + high) / 2);
-        console.log(targetElement);
 
         if (values[current] === targetElement) {
             elementFound = true;
@@ -88,6 +81,12 @@ export default function sketch(p) {
             low = current;
         } else if (values[current] > targetElement) {
             high = current
+        };
+
+        if (high === 1) {
+            elementFound = true;
+            high = 0;
+            current = 0
         };
     }
 
